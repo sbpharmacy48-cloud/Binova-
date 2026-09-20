@@ -118,7 +118,7 @@ function Stats() {
     {stats.map(({ key, value, suffix = '', prefix = '', label, decimals = 0 }) => { const Icon = statIcons[key] || Sparkles; return <div className="stat-item" key={key}><Icon size={16} /><strong><AnimatedNumber value={Number(value) || 0} prefix={prefix} suffix={suffix} decimals={decimals} /></strong><span>{label}</span></div> })}
   </motion.section>
 }
-
+// this is a comment to test the code completion feature.
 function PlanCard({ plan }) {
   const Icon = plan.icon
   return <motion.article className={`plan-card accent-${plan.accent}${plan.featured ? ' featured' : plan.recommended ? ' recommended' : ''}`} whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
