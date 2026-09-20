@@ -22,13 +22,6 @@ export async function fetchWalletSystem() {
   return { wallet, history: history ?? [], transactions: transactions ?? [], withdrawals: withdrawals ?? [], investments: investments ?? [], plans: plans ?? [] }
 }
 
-export async function claimWalletProfit() {
-  await getDepositSession()
-  const { data, error } = await requireClient().rpc('claim_profit')
-  if (error) throw error
-  return data
-}
-
 export async function requestWalletWithdrawal({ amount, walletAddress, network = 'BEP20', currency = 'USDT' }) {
   await getDepositSession()
   const { data, error } = await requireClient().rpc('request_withdrawal', { p_amount: amount, p_wallet_address: walletAddress, p_network: network, p_currency: currency })
