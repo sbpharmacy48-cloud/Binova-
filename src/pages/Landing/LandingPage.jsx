@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -25,6 +25,7 @@ import {
   Zap,
 } from 'lucide-react'
 import { fetchInvestmentPlans, fetchLandingStats } from '../../services/investment/plans'
+import { supabase } from '../../services/supabase/client'
 import './LandingPage.css'
 
 const planIcons = { 'circle-dollar-sign': CircleDollarSign, 'trending-up': TrendingUp, 'bar-chart-3': BarChart3, 'wallet-cards': WalletCards, sparkles: Sparkles }
@@ -194,6 +195,24 @@ function LandingFooter() {
 }
 
 export function LandingPage() {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!supabase) return undefined
+    let active = true
+    const redirectIfAuthenticated = (session) => {
+      if (active && session) navigate('/dashboard', { replace: true })
+    }
+    supabase.auth.getSession().then(({ data: { session } }) => redirectIfAuthenticated(session))
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') redirectIfAuthenticated(session)
+    })
+    return () => {
+      active = false
+      subscription.unsubscribe()
+    }
+  }, [navigate])
+
   return <div className="landing-page">
     <Header />
     <main>

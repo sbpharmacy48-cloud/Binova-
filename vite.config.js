@@ -12,7 +12,7 @@ export default defineConfig({
       filename: 'app-sw.js',
       includeAssets: ['favicon.svg'],
       manifest: false,
-      workbox: { navigateFallback: '/' },
+      workbox: { navigateFallback: '/index.html' },
     }),
   ],
   resolve: {

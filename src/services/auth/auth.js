@@ -57,7 +57,7 @@ export async function getCurrentUser() {
 }
 
 export async function sendSocialAuth(provider) {
-  return requireClient().auth.signInWithOAuth({ provider, options: { redirectTo: window.location.origin } })
+  return requireClient().auth.signInWithOAuth({ provider, options: { redirectTo: `${window.location.origin}/auth/callback` } })
 }
 
 export async function signOut() {

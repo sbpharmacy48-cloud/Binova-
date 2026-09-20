@@ -4,7 +4,7 @@ import { supabase } from '../services/supabase/client'
 import { AuthLayout } from '../layouts/AuthLayout/AuthLayout'
 import { MobileLayout } from '../layouts/MobileLayout/MobileLayout'
 import { LandingPage } from '../pages/Landing/LandingPage'
-import { ForgotPasswordPage, LoginPage, RegisterPage, ResetPasswordPage, VerifyEmailPage, VerifyOtpPage } from '../pages/Auth/AuthPages'
+import { ForgotPasswordPage, LoginPage, OAuthCallbackPage, RegisterPage, ResetPasswordPage, VerifyEmailPage, VerifyOtpPage } from '../pages/Auth/AuthPages'
 import { FoundationPage } from '../pages/PageFactory'
 import { DashboardPage } from '../pages/Dashboard/DashboardPage'
 import { InvestmentPage } from '../pages/Investment/InvestmentPage'
@@ -98,6 +98,7 @@ export function AppRoutes() {
       <Route path="/transactions" element={<RequireAuth><HistoryPage /></RequireAuth>} />
       <Route path="/admin" element={<RequireAuth><RequireAdmin><AdminPage /></RequireAdmin></RequireAuth>} />
       <Route element={<AuthLayout />}>
+        <Route path="/auth/callback" element={<OAuthCallbackPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/signup" element={<RegisterPage />} />

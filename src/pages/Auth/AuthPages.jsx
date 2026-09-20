@@ -43,6 +43,49 @@ function SocialButtons() {
   return <div className="social-area"><div className="or-divider"><span>or continue with</span></div>{social.map((item) => { const Icon = item.icon; return <button className="social-button" type="button" key={item.id} onClick={async () => { setError(''); try { const { error: authError } = await sendSocialAuth(item.id); if (authError) setError(authError.message) } catch (caught) { setError(caught.message) } }}><Icon className={`social-mark ${item.id}`} aria-hidden="true" />{item.label}</button> })}{error && <p className="auth-error">{error}</p>}</div>
 }
 
+export function OAuthCallbackPage() {
+  const navigate = useNavigate()
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (!supabase) {
+      navigate('/login', { replace: true })
+      return undefined
+    }
+
+    let active = true
+    let redirectTimer
+    const complete = (session) => {
+      if (!active || !session) return
+      window.clearTimeout(redirectTimer)
+      navigate('/dashboard', { replace: true })
+    }
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') complete(session)
+    })
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) complete(session)
+    }).catch((caught) => {
+      if (active) setError(caught.message || 'Unable to complete Google sign in')
+    })
+
+    redirectTimer = window.setTimeout(() => {
+      if (!active) return
+      setError('Google sign in did not produce an application session. Please try again.')
+    }, 8000)
+
+    return () => {
+      active = false
+      window.clearTimeout(redirectTimer)
+      subscription.unsubscribe()
+    }
+  }, [navigate])
+
+  return <div className="auth-page compact"><div className="auth-heading"><h1>Completing <strong>sign in</strong></h1><p>{error || 'Securing your Binova session...'}</p>{error && <Link className="back-link" to="/login">Back to sign in</Link>}</div></div>
+}
+
 function AuthButton({ children, loading }) {
   return <button className="auth-submit" type="submit" disabled={loading}>{loading ? 'Please wait...' : <>{children} <ArrowRight size={17} /></>}</button>
 }
